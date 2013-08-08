@@ -15,6 +15,9 @@ import org.jclouds.openstack.swift.domain.ObjectInfo;
 import org.jclouds.openstack.swift.options.ListContainerOptions;
 import org.jclouds.rest.RestContext;
 
+import java.text.SimpleDateFormat;
+
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -35,6 +38,9 @@ public class SDSCTest {
     // ENTER CREDENTIALS HERE!
     private String username = <REPLACE>;
     private String password = <REPLACE>;
+    
+    private SimpleDateFormat dateFormat = 
+        new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
 
     private SwiftClient getFreshSwiftClient() {
         String trimmedAuthUrl = // JClouds expects authURL with no version
@@ -97,8 +103,9 @@ public class SDSCTest {
                         swiftClient.getObjectInfo(containerId, contentId);
                     } catch(Exception e) {
                         errorCount++;
-                        System.out.println("Exception getting content: " + 
-                                           e.getMessage());
+                        System.out.println("Exception getting content at time: " + 
+                                           dateFormat.format(new Date()) + 
+                                           ", error message: " + e.getMessage());
                     }
                     marker = contentId;
                 }
