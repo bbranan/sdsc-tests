@@ -63,6 +63,7 @@ public class SDSCTest {
                 iterationCompletedCount++;
             } catch(Exception e) {
                 System.out.println("Iteration failure on attempt: " + i +
+                                   " at time: " + dateFormat.format(new Date()) + 
                                    ". Error message: " + e.getMessage());
             }
         }
