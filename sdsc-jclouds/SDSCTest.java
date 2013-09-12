@@ -58,11 +58,13 @@ public class SDSCTest {
 
         int iterationCompletedCount = 0;
         for(int i=0; i<plannedAttempts; i++) {
+            System.out.println("Beginning attempt to iterate through content " +
+                               "at time: " + dateFormat.format(new Date()));
             try {
                 iterateThroughContent(getFreshSwiftClient());
                 iterationCompletedCount++;
             } catch(Exception e) {
-                System.out.println("Iteration failure on attempt: " + i +
+                System.out.println("Iteration failure on attempt: " + i + 
                                    " at time: " + dateFormat.format(new Date()) + 
                                    ". Error message: " + e.getMessage());
             }
@@ -106,7 +108,12 @@ public class SDSCTest {
                         errorCount++;
                         System.out.println("Exception getting content at time: " + 
                                            dateFormat.format(new Date()) + 
+                                           ", error type: " + e.getClass() +
                                            ", error message: " + e.getMessage());
+                        if(e != null && e.getMessage() != null && 
+                           e.getMessage().contains("401 Unauthorized")) {
+                            swiftClient = getFreshSwiftClient();
+                        }
                     }
                     marker = contentId;
                 }
