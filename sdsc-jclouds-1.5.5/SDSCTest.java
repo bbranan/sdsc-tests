@@ -1,6 +1,7 @@
 import org.jclouds.ContextBuilder;
 import org.jclouds.blobstore.domain.PageSet;
 import org.jclouds.openstack.swift.SwiftApiMetadata;
+import org.jclouds.openstack.swift.SwiftAsyncClient;
 import org.jclouds.openstack.swift.SwiftClient;
 import org.jclouds.openstack.swift.domain.ContainerMetadata;
 import org.jclouds.openstack.swift.domain.MutableObjectInfoWithMetadata;
@@ -24,10 +25,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Tests the SDSC provider with JClouds 1.7.1
+ * Tests the SDSC provider with JClouds 1.5.5
  *
  * @author Bill Branan
- *         Date: 3/11/14
+ *         Date: 3/12/14
  */
 public class SDSCTest {
 
@@ -42,10 +43,12 @@ public class SDSCTest {
     private SwiftClient getFreshSwiftClient() {
         String trimmedAuthUrl = // JClouds expects authURL with no version
             authUrl.substring(0, authUrl.lastIndexOf("/"));
-        return ContextBuilder.newBuilder(new SwiftApiMetadata())
-                              .endpoint(trimmedAuthUrl)
-                              .credentials(username, password)
-                              .buildApi(SwiftClient.class);
+        RestContext<SwiftClient, SwiftAsyncClient> context =
+            ContextBuilder.newBuilder(new SwiftApiMetadata())
+                          .endpoint(trimmedAuthUrl)
+                          .credentials(username, password)
+                          .build(SwiftApiMetadata.CONTEXT_TOKEN);
+        return context.getApi();
     }
 
     private BlobStore getFreshBlobStore() {
@@ -59,7 +62,7 @@ public class SDSCTest {
     }
 
     public void testSwiftClient() throws Exception {
-        System.out.println("STARTING JCLOUDS 1.7.1 TEST");
+        System.out.println("STARTING JCLOUDS 1.5.5 TEST");
         SwiftClient swiftClient = getFreshSwiftClient();
 
         System.out.println("TEST: Get Containers");
@@ -86,7 +89,7 @@ public class SDSCTest {
         swiftClient.deleteContainerIfEmpty(containerName);
         System.out.println("  DELETE successful");
 
-        System.out.println("JCLOUDS 1.7.1 TEST COMPLETE");
+        System.out.println("JCLOUDS 1.5.5 TEST COMPLETE");
     }
 
     // Attempts to push a file using the Swift client
@@ -106,7 +109,7 @@ public class SDSCTest {
             System.out.println("  PUT successful, checksum: " + checksum);
         } catch(Exception e) {
             System.out.println("  PUT failed with error: " + e.getMessage());
-            e.printStackTrace();
+            e.printStackTrace();          
         }
         return contentName;
     }
