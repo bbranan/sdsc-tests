@@ -27,7 +27,7 @@ import java.util.Set;
  * Tests the SDSC provider with JClouds 1.7.1
  *
  * @author Bill Branan
- *         Date: 3/11/14
+ *         Date: 3/12/14
  */
 public class SDSCTest {
 
@@ -69,17 +69,17 @@ public class SDSCTest {
         for(ContainerMetadata container : containers) {
             System.out.println("  " + container.getName());
         }
-        
+
         String containerName = "test-container-" + System.currentTimeMillis();
         System.out.println("TEST: Create Container named " + containerName);
         Map<String, String> properties = new HashMap<>();
         CreateContainerOptions createContainerOptions =
             CreateContainerOptions.Builder.withMetadata(properties);
         swiftClient.createContainer(containerName, createContainerOptions);
-                
+
         String swift = putContentSwift(containerName);
         String blob = putContentBlob(containerName);
-        
+
         deleteContent(containerName, swift, blob);
 
         System.out.println("TEST: DELETE Container named " + containerName);
@@ -90,17 +90,17 @@ public class SDSCTest {
     }
 
     // Attempts to push a file using the Swift client
-    public String putContentSwift(String containerName) throws Exception {   
+    public String putContentSwift(String containerName) throws Exception {
         SwiftClient swiftClient = getFreshSwiftClient();
         String contentName = "test-content-swift-" + System.currentTimeMillis();
         System.out.println("TEST SWIFT: PUT content named " + contentName);
-        
+
         SwiftObject swiftObject = swiftClient.newSwiftObject();
         MutableObjectInfoWithMetadata objectInfoMetadata = swiftObject.getInfo();
         objectInfoMetadata.setName(contentName);
         InputStream input = new FileInputStream("c:\\test.txt");
         swiftObject.setPayload(input);
-        
+
         try {
             String checksum = swiftClient.putObject(containerName, swiftObject);
             System.out.println("  PUT successful, checksum: " + checksum);
@@ -116,12 +116,12 @@ public class SDSCTest {
         BlobStore blobStore = getFreshBlobStore();
         String contentName = "test-content-blob-" + System.currentTimeMillis();
         System.out.println("TEST BLOB: PUT content named " + contentName);
-        
+
         InputStream input = new FileInputStream("c:\\test.txt");
         Blob blobs = blobStore.blobBuilder(contentName).payload(input).build();
-        
+
         try {
-            String checksum = blobStore.putBlob(containerName, blobs);        
+            String checksum = blobStore.putBlob(containerName, blobs);
             System.out.println("  PUT successful, checksum: " + checksum);
         } catch(Exception e) {
             System.out.println("  PUT failed with error: " + e.getMessage());
@@ -129,7 +129,7 @@ public class SDSCTest {
         }
         return contentName;
     }
-    
+
     // Attempts to delete content
     public void deleteContent(String containerName, String... contentNames) {
         SwiftClient swiftClient = getFreshSwiftClient();
@@ -140,7 +140,7 @@ public class SDSCTest {
         }
     }
 
-    // Start the ball rolling    
+    // Start the ball rolling
     public static void main(String[] args) throws Exception {
         SDSCTest tester = new SDSCTest();
         tester.testSwiftClient();
