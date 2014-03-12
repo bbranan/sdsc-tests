@@ -32,13 +32,17 @@ import java.util.Set;
  */
 public class SDSCTest {
 
+    // ENTER AUTH URL HERE!
     private static String authUrl =
         "https://duracloud.auth.cloud.sdsc.edu/auth/v1.0";
-//        "https://auth.api.rackspacecloud.com/v1.0";
+        //"https://auth.api.rackspacecloud.com/v1.0";
 
     // ENTER CREDENTIALS HERE!
     private String username = <REPLACE>;
     private String password = <REPLACE>;
+
+    // UPDATE FILE PATH HERE!
+    private String filepath = "c:\\test.txt";
 
     private SwiftClient getFreshSwiftClient() {
         String trimmedAuthUrl = // JClouds expects authURL with no version
@@ -101,7 +105,7 @@ public class SDSCTest {
         SwiftObject swiftObject = swiftClient.newSwiftObject();
         MutableObjectInfoWithMetadata objectInfoMetadata = swiftObject.getInfo();
         objectInfoMetadata.setName(contentName);
-        InputStream input = new FileInputStream("c:\\test.txt");
+        InputStream input = new FileInputStream(filepath);
         swiftObject.setPayload(input);
 
         try {
@@ -120,7 +124,7 @@ public class SDSCTest {
         String contentName = "test-content-blob-" + System.currentTimeMillis();
         System.out.println("TEST BLOB: PUT content named " + contentName);
 
-        InputStream input = new FileInputStream("c:\\test.txt");
+        InputStream input = new FileInputStream(filepath);
         Blob blobs = blobStore.blobBuilder(contentName).payload(input).build();
 
         try {
