@@ -1,5 +1,8 @@
+import com.google.common.collect.ImmutableSet;
+import com.google.inject.Module;
 import org.jclouds.ContextBuilder;
 import org.jclouds.blobstore.domain.PageSet;
+import org.jclouds.logging.slf4j.config.SLF4JLoggingModule;
 import org.jclouds.openstack.swift.SwiftApiMetadata;
 import org.jclouds.openstack.swift.SwiftClient;
 import org.jclouds.openstack.swift.domain.ContainerMetadata;
@@ -22,6 +25,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import java.lang.Iterable;
 
 /**
  * Tests the SDSC provider with JClouds 1.7.1
@@ -46,9 +51,12 @@ public class SDSCTest {
     private SwiftClient getFreshSwiftClient() {
         String trimmedAuthUrl = // JClouds expects authURL with no version
             authUrl.substring(0, authUrl.lastIndexOf("/"));
+        Iterable<Module> modules = 
+            ImmutableSet.<Module> of(new SLF4JLoggingModule());            
         return ContextBuilder.newBuilder(new SwiftApiMetadata())
                               .endpoint(trimmedAuthUrl)
                               .credentials(username, password)
+                              .modules(modules)
                               .buildApi(SwiftClient.class);
     }
 
