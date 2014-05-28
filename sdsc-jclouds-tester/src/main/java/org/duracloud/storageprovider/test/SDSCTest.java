@@ -50,7 +50,9 @@ public class SDSCTest {
                               .endpoint(trimmedAuthUrl)
                               .credentials(username, password)
                               .modules(modules)
+                              // For JClouds 1.7.1 - 1.7.2
 //                              .buildApi(SwiftClient.class);
+                              // For JClouds 1.5.5
                               .build(SwiftApiMetadata.CONTEXT_TOKEN).getApi();
     }
 
