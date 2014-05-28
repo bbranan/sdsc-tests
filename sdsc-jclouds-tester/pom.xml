@@ -51,7 +51,7 @@
           <includeSite>false</includeSite>
           <archive>
             <manifest>
-              <mainClass>org.duracloud.storageprovider.test.SDSCTest</mainClass>
+              <mainClass>org.duracloud.storageprovider.test.SDSCPercentTest</mainClass>
             </manifest>
           </archive>
         </configuration>

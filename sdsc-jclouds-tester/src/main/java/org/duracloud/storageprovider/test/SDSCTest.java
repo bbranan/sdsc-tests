@@ -11,6 +11,7 @@ import org.jclouds.openstack.swift.SwiftApiMetadata;
 import org.jclouds.openstack.swift.SwiftClient;
 import org.jclouds.openstack.swift.domain.ContainerMetadata;
 import org.jclouds.openstack.swift.domain.MutableObjectInfoWithMetadata;
+import org.jclouds.openstack.swift.domain.ObjectInfo;
 import org.jclouds.openstack.swift.domain.SwiftObject;
 import org.jclouds.openstack.swift.options.CreateContainerOptions;
 import org.jclouds.openstack.swift.options.ListContainerOptions;
@@ -18,6 +19,7 @@ import org.jclouds.openstack.swift.options.ListContainerOptions;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -66,7 +68,7 @@ public class SDSCTest {
                               .getBlobStore();
     }
 
-    public void testSwiftClient() throws Exception {
+    public void testSwiftClient(String contentName) throws Exception {
         System.out.println("STARTING JCLOUDS TEST");
         SwiftClient swiftClient = getFreshSwiftClient();
 
@@ -85,10 +87,15 @@ public class SDSCTest {
             CreateContainerOptions.Builder.withMetadata(properties);
         swiftClient.createContainer(containerName, createContainerOptions);
 
-        String swift = putContentSwift(containerName);
-        String blob = putContentBlob(containerName);
+        String swiftContentName = "swift-" + contentName;
+        String blobContentName = "blob-" + contentName;
 
-        deleteContent(containerName, swift, blob);
+        putContentSwift(containerName, swiftContentName);
+        putContentBlob(containerName, blobContentName);
+
+        listContent(containerName);
+
+        deleteContent(containerName, swiftContentName, blobContentName);
 
         System.out.println("TEST: DELETE Container named " + containerName);
         swiftClient.deleteContainerIfEmpty(containerName);
@@ -98,9 +105,9 @@ public class SDSCTest {
     }
 
     // Attempts to push a file using the Swift client
-    public String putContentSwift(String containerName) throws Exception {
+    public void putContentSwift(String containerName, String contentName)
+        throws Exception {
         SwiftClient swiftClient = getFreshSwiftClient();
-        String contentName = "test-content-swift-" + System.currentTimeMillis();
         System.out.println("TEST SWIFT: PUT content named " + contentName);
 
         SwiftObject swiftObject = swiftClient.newSwiftObject();
@@ -116,13 +123,13 @@ public class SDSCTest {
             System.out.println("  PUT failed with error: " + e.getMessage());
             e.printStackTrace();
         }
-        return contentName;
     }
 
     // Attempts to push a file using the BlobStore client
-    public String putContentBlob(String containerName) throws Exception {
+    public void putContentBlob(String containerName, String contentName)
+        throws Exception {
         BlobStore blobStore = getFreshBlobStore();
-        String contentName = "test-content-blob-" + System.currentTimeMillis();
+
         System.out.println("TEST BLOB: PUT content named " + contentName);
 
         InputStream input = new FileInputStream(filepath);
@@ -135,7 +142,26 @@ public class SDSCTest {
             System.out.println("  PUT failed with error: " + e.getMessage());
             e.printStackTrace();
         }
-        return contentName;
+    }
+
+    // Attempts to list all content in a container
+    public void listContent(String containerName) {
+        SwiftClient swiftClient = getFreshSwiftClient();
+
+        try {
+            Set<ObjectInfo> objectList =
+                swiftClient.listObjects(containerName, new ListContainerOptions());
+            Iterator<ObjectInfo> objectInfoIterator = objectList.iterator();
+            System.out.println("TEST: Get List of Content in Container");
+            while(objectInfoIterator.hasNext()) {
+                ObjectInfo objectInfo = objectInfoIterator.next();
+                System.out.println("   " + objectInfo.getName());
+            }
+        } catch(Exception e) {
+            System.out.println("  FAILED to list container contents " +
+                               "due to error: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     // Attempts to delete content
@@ -150,8 +176,9 @@ public class SDSCTest {
 
     // Start the ball rolling
     public static void main(String[] args) throws Exception {
+        String contentName = "test-content-" + System.currentTimeMillis();
         SDSCTest tester = new SDSCTest();
-        tester.testSwiftClient();
+        tester.testSwiftClient(contentName);
         System.exit(0);
     }
 
