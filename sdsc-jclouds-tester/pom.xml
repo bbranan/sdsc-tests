@@ -1,0 +1,124 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.duracloud</groupId>
+  <artifactId>sdsc-jclouds-tester</artifactId>
+  <packaging>jar</packaging>
+  <version>2.0</version>
+  <name>SDSC JClouds Tester</name>
+
+  <repositories>
+
+    <repository>
+      <id>central</id>
+      <name>Maven Repository Switchboard</name>
+      <url>http://repo1.maven.org/maven2</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
+  </repositories>
+
+  <properties>
+    <!--<jclouds.version>1.7.2</jclouds.version>-->
+    <jclouds.version>1.5.5</jclouds.version>
+  </properties>
+
+  <build>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <descriptor>src/main/assembly/dep.xml</descriptor>
+          <includeSite>false</includeSite>
+          <archive>
+            <manifest>
+              <mainClass>org.duracloud.storageprovider.test.SDSCTest</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
+  <dependencies>
+<!--
+  <dependency>
+    <groupId>org.apache.jclouds</groupId>
+    <artifactId>jclouds-core</artifactId>
+    <version>${jclouds.version}</version>
+  </dependency>
+
+  <dependency>
+    <groupId>org.apache.jclouds</groupId>
+    <artifactId>jclouds-blobstore</artifactId>
+    <version>${jclouds.version}</version>
+  </dependency>
+
+  <dependency>
+    <groupId>org.apache.jclouds.api</groupId>
+    <artifactId>swift</artifactId>
+    <version>${jclouds.version}</version>
+  </dependency>
+  
+  <dependency>
+    <groupId>org.apache.jclouds.driver</groupId>
+    <artifactId>jclouds-slf4j</artifactId>
+    <version>${jclouds.version}</version>
+  </dependency>  
+-->
+
+    <dependency>
+      <groupId>org.jclouds</groupId>
+      <artifactId>jclouds-core</artifactId>
+      <version>${jclouds.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jclouds</groupId>
+      <artifactId>jclouds-blobstore</artifactId>
+      <version>${jclouds.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jclouds.api</groupId>
+      <artifactId>swift</artifactId>
+      <version>${jclouds.version}</version>
+    </dependency>
+
+  <dependency>
+    <groupId>org.jclouds.driver</groupId>
+    <artifactId>jclouds-slf4j</artifactId>
+    <version>${jclouds.version}</version>
+  </dependency>
+
+  </dependencies>
+</project>
