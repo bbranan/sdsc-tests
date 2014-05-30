@@ -23,8 +23,8 @@
   </repositories>
 
   <properties>
-    <!--<jclouds.version>1.7.2</jclouds.version>-->
-    <jclouds.version>1.5.5</jclouds.version>
+    <jclouds.version>1.7.2</jclouds.version>
+    <!--<jclouds.version>1.5.5</jclouds.version>-->
   </properties>
 
   <build>
@@ -71,7 +71,7 @@
 
   <dependencies>
 
-<!-- JClouds 1.7.1 - 1.7.2
+<!-- JClouds 1.7.1 - 1.7.2 -->
   <dependency>
     <groupId>org.apache.jclouds</groupId>
     <artifactId>jclouds-core</artifactId>
@@ -99,11 +99,10 @@
   <dependency>
     <groupId>org.apache.jclouds.labs</groupId>
     <artifactId>openstack-swift</artifactId>
-    <version>1.7.2</version>
+    <version>${jclouds.version}</version>
   </dependency>
- -->
 
-<!-- JClouds 1.5.5 -->
+<!-- JClouds 1.5.5
     <dependency>
       <groupId>org.jclouds</groupId>
       <artifactId>jclouds-core</artifactId>
@@ -127,6 +126,6 @@
     <artifactId>jclouds-slf4j</artifactId>
     <version>${jclouds.version}</version>
   </dependency>
-
+ -->
   </dependencies>
 </project>

@@ -2,6 +2,7 @@ package org.duracloud.storageprovider.test;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Module;
+import org.jclouds.Constants;
 import org.jclouds.ContextBuilder;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.BlobStoreContext;
@@ -21,6 +22,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -48,14 +50,18 @@ public class SDSCTest {
             authUrl.substring(0, authUrl.lastIndexOf("/"));
         Iterable<Module> modules = 
             ImmutableSet.<Module> of(new SLF4JLoggingModule());            
+            Properties properties = new Properties();
+            properties.setProperty(Constants.PROPERTY_STRIP_EXPECT_HEADER,
+                                   "true");
         return ContextBuilder.newBuilder(new SwiftApiMetadata())
                               .endpoint(trimmedAuthUrl)
                               .credentials(username, password)
                               .modules(modules)
                               // For JClouds 1.7.1 - 1.7.2
-//                              .buildApi(SwiftClient.class);
+                              .overrides(properties)
+                              .buildApi(SwiftClient.class);
                               // For JClouds 1.5.5
-                              .build(SwiftApiMetadata.CONTEXT_TOKEN).getApi();
+//                              .build(SwiftApiMetadata.CONTEXT_TOKEN).getApi();
     }
 
     private BlobStore getFreshBlobStore() {
@@ -91,7 +97,7 @@ public class SDSCTest {
         String blobContentName = "blob-" + contentName;
 
         putContentSwift(containerName, swiftContentName);
-        putContentBlob(containerName, blobContentName);
+//        putContentBlob(containerName, blobContentName);
 
         listContent(containerName);
 
@@ -125,24 +131,24 @@ public class SDSCTest {
         }
     }
 
-    // Attempts to push a file using the BlobStore client
-    public void putContentBlob(String containerName, String contentName)
-        throws Exception {
-        BlobStore blobStore = getFreshBlobStore();
-
-        System.out.println("TEST BLOB: PUT content named " + contentName);
-
-        InputStream input = new FileInputStream(filepath);
-        Blob blobs = blobStore.blobBuilder(contentName).payload(input).build();
-
-        try {
-            String checksum = blobStore.putBlob(containerName, blobs);
-            System.out.println("  PUT successful, checksum: " + checksum);
-        } catch(Exception e) {
-            System.out.println("  PUT failed with error: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+//    // Attempts to push a file using the BlobStore client
+//    public void putContentBlob(String containerName, String contentName)
+//        throws Exception {
+//        BlobStore blobStore = getFreshBlobStore();
+//
+//        System.out.println("TEST BLOB: PUT content named " + contentName);
+//
+//        InputStream input = new FileInputStream(filepath);
+//        Blob blobs = blobStore.blobBuilder(contentName).payload(input).build();
+//
+//        try {
+//            String checksum = blobStore.putBlob(containerName, blobs);
+//            System.out.println("  PUT successful, checksum: " + checksum);
+//        } catch(Exception e) {
+//            System.out.println("  PUT failed with error: " + e.getMessage());
+//            e.printStackTrace();
+//        }
+//    }
 
     // Attempts to list all content in a container
     public void listContent(String containerName) {
