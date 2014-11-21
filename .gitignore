@@ -1,4 +1,5 @@
 *.class
+*.log
 sdsc-jclouds-tester/sdsc-jclouds-tester.iml
 sdsc-jclouds-tester/sdsc-jclouds-tester.ipr
 sdsc-jclouds-tester/sdsc-jclouds-tester.iws
